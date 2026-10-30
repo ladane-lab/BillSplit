@@ -260,10 +260,10 @@ public class SettleUpActivity extends AppCompatActivity {
             JSONArray array = new JSONArray(savedData);
             for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
-                if (selectedGroup.getId().equals(obj.optString("groupId"))) {
+                if (selectedGroup.getId().equals(obj.optString("groupId", "group_pune_flat"))) {
                     list.add(new Settlement(
                             obj.optString("id"),
-                            obj.optString("groupId"),
+                            obj.optString("groupId", "group_pune_flat"),
                             obj.getString("payer"),
                             obj.getString("receiver"),
                             obj.getLong("amountPaise"),
@@ -327,8 +327,12 @@ public class SettleUpActivity extends AppCompatActivity {
 
             array.put(settlementObj);
 
-            preferences.edit().putString("settlements", array.toString()).apply();
-            Toast.makeText(this, "Settlement recorded successfully!", Toast.LENGTH_SHORT).show();
+            boolean committed = preferences.edit().putString("settlements", array.toString()).commit();
+            if (committed) {
+                Toast.makeText(this, "Settlement recorded successfully!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Settlement saved locally.", Toast.LENGTH_SHORT).show();
+            }
             finish();
 
         } catch (Exception e) {

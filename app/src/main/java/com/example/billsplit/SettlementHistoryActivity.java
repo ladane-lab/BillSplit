@@ -60,10 +60,10 @@ public class SettlementHistoryActivity extends AppCompatActivity {
             JSONArray array = new JSONArray(savedData);
             for (int i = array.length() - 1; i >= 0; i--) {
                 JSONObject obj = array.getJSONObject(i);
-                if (activeGroupId.equals(obj.optString("groupId"))) {
+                if (activeGroupId.equals(obj.optString("groupId", "group_pune_flat"))) {
                     settlementList.add(new Settlement(
                             obj.optString("id"),
-                            obj.optString("groupId"),
+                            obj.optString("groupId", "group_pune_flat"),
                             obj.getString("payer"),
                             obj.getString("receiver"),
                             obj.getLong("amountPaise"),

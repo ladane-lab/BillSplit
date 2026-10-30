@@ -273,10 +273,10 @@ public class MainActivity extends AppCompatActivity {
             JSONArray array = new JSONArray(savedData);
             for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
-                if (activeGroupId.equals(obj.optString("groupId"))) {
+                if (activeGroupId.equals(obj.optString("groupId", "group_pune_flat"))) {
                     list.add(new Settlement(
                             obj.optString("id"),
-                            obj.optString("groupId"),
+                            obj.optString("groupId", "group_pune_flat"),
                             obj.getString("payer"),
                             obj.getString("receiver"),
                             obj.getLong("amountPaise"),
