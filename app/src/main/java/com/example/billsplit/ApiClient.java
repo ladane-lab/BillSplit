@@ -6,8 +6,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-    // 127.0.0.1 works with 'adb reverse tcp:5000 tcp:5000' on both physical devices and emulators
-    private static final String BASE_URL = "http://127.0.0.1:5000/";
+    // Wi-Fi IP address allows mobile phone to connect wirelessly without USB cable
+    private static final String BASE_URL = "http://10.194.36.146:5000/";
     private static Retrofit retrofit = null;
 
     public static ApiService getApiService() {
