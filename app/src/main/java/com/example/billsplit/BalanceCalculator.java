@@ -16,12 +16,14 @@ public class BalanceCalculator {
         if (members == null) return balances;
 
         for (String m : members) {
-            balances.put(m.trim(), 0L);
+            if (m != null && !m.trim().isEmpty()) {
+                balances.put(m.trim(), 0L);
+            }
         }
 
         if (expenses != null) {
             for (Expense expense : expenses) {
-                String paidBy = expense.getPaidBy();
+                String paidBy = findMatchingMemberKey(balances, expense.getPaidBy());
                 long totalAmountPaise = expense.getAmountPaise();
 
                 Long currentPayerBalance = balances.get(paidBy);
@@ -31,7 +33,7 @@ public class BalanceCalculator {
                 List<MemberSplit> splits = expense.getSplits();
                 if (splits != null && !splits.isEmpty()) {
                     for (MemberSplit split : splits) {
-                        String mName = split.getMemberName();
+                        String mName = findMatchingMemberKey(balances, split.getMemberName());
                         Long currentBal = balances.get(mName);
                         if (currentBal == null) currentBal = 0L;
                         balances.put(mName, currentBal - split.getSharePaise());
@@ -39,9 +41,10 @@ public class BalanceCalculator {
                 } else {
                     long share = totalAmountPaise / (members.isEmpty() ? 1 : members.size());
                     for (String m : members) {
-                        Long currentBal = balances.get(m);
+                        String mName = findMatchingMemberKey(balances, m);
+                        Long currentBal = balances.get(mName);
                         if (currentBal == null) currentBal = 0L;
-                        balances.put(m, currentBal - share);
+                        balances.put(mName, currentBal - share);
                     }
                 }
             }
@@ -50,8 +53,8 @@ public class BalanceCalculator {
         // Apply settlements: payer gives money to receiver
         if (settlements != null) {
             for (Settlement s : settlements) {
-                String payer = s.getPayer();
-                String receiver = s.getReceiver();
+                String payer = findMatchingMemberKey(balances, s.getPayer());
+                String receiver = findMatchingMemberKey(balances, s.getReceiver());
                 long amt = s.getAmountPaise();
 
                 Long payerBal = balances.get(payer);
@@ -65,6 +68,17 @@ public class BalanceCalculator {
         }
 
         return balances;
+    }
+
+    private static String findMatchingMemberKey(Map<String, Long> balances, String name) {
+        if (name == null) return "Unknown";
+        String clean = name.trim();
+        for (String key : balances.keySet()) {
+            if (key.equalsIgnoreCase(clean)) {
+                return key;
+            }
+        }
+        return clean;
     }
 
     public static List<Debt> calculateSimplifiedDebts(Map<String, Long> netBalances) {

@@ -124,8 +124,9 @@ public class AddExpenseActivity extends AppCompatActivity {
                 defaultGroup.put("id", "group_pune_flat");
                 defaultGroup.put("name", "Pune Flat");
                 defaultGroup.put("type", "Flat 🏠");
+                SessionManager sessionManager = new SessionManager(this);
                 JSONArray defaultMembers = new JSONArray();
-                defaultMembers.put("You");
+                defaultMembers.put(sessionManager.getUserName());
                 defaultMembers.put("Rahul");
                 defaultMembers.put("Amit");
                 defaultGroup.put("members", defaultMembers);
@@ -224,8 +225,9 @@ public class AddExpenseActivity extends AppCompatActivity {
         if (selectedGroup != null && !selectedGroup.getMembers().isEmpty()) {
             return selectedGroup.getMembers();
         }
+        SessionManager sessionManager = new SessionManager(this);
         List<String> members = new ArrayList<>();
-        members.add("You");
+        members.add(sessionManager.getUserName());
         members.add("Rahul");
         members.add("Amit");
         return members;
@@ -512,8 +514,10 @@ public class AddExpenseActivity extends AppCompatActivity {
         }
 
         String category = spCategory.getSelectedItem().toString();
+        SessionManager sessionManager = new SessionManager(this);
+        String currentUserName = sessionManager.getUserName();
         String paidBy = (spPaidBy.getSelectedItem() != null)
-                ? spPaidBy.getSelectedItem().toString() : "You";
+                ? spPaidBy.getSelectedItem().toString() : currentUserName;
         String groupId = (selectedGroup != null) ? selectedGroup.getId() : "group_pune_flat";
 
         try {

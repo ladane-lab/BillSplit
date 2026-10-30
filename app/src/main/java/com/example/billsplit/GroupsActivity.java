@@ -57,6 +57,9 @@ public class GroupsActivity extends AppCompatActivity {
         String savedGroups = preferences.getString("groups", null);
         if (savedGroups == null || savedGroups.trim().isEmpty() || savedGroups.equals("[]")) {
             try {
+                SessionManager sessionManager = new SessionManager(this);
+                String currentUserName = sessionManager.getUserName();
+
                 JSONArray array = new JSONArray();
                 JSONObject defaultGroup = new JSONObject();
                 defaultGroup.put("id", "group_pune_flat");
@@ -64,7 +67,7 @@ public class GroupsActivity extends AppCompatActivity {
                 defaultGroup.put("type", "Flat 🏠");
 
                 JSONArray members = new JSONArray();
-                members.put("You");
+                members.put(currentUserName);
                 members.put("Rahul");
                 members.put("Amit");
                 defaultGroup.put("members", members);

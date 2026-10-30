@@ -84,16 +84,18 @@ public class AddGroupActivity extends AppCompatActivity {
             }
         }
 
-        // Always ensure "You" is included as a member if list is empty or doesn't have it
-        boolean hasYou = false;
+        SessionManager sessionManager = new SessionManager(this);
+        String currentUserName = sessionManager.getUserName();
+
+        boolean hasCurrentUser = false;
         for (int i = 0; i < membersArray.length(); i++) {
-            if (membersArray.optString(i).equalsIgnoreCase("You")) {
-                hasYou = true;
+            if (membersArray.optString(i).equalsIgnoreCase(currentUserName)) {
+                hasCurrentUser = true;
                 break;
             }
         }
-        if (!hasYou) {
-            membersArray.put("You");
+        if (!hasCurrentUser) {
+            membersArray.put(currentUserName);
         }
 
         String groupType = spGroupType.getSelectedItem().toString();

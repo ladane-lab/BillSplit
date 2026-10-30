@@ -170,7 +170,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="You owe"
+                    android:text="You Need to Pay"
                     android:textColor="#687386"
                     android:textSize="14sp" />
 
@@ -197,7 +197,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Owed to you"
+                    android:text="You Will Receive"
                     android:textColor="#687386"
                     android:textSize="14sp" />
 

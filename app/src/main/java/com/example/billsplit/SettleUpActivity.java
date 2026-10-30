@@ -109,10 +109,10 @@ public class SettleUpActivity extends AppCompatActivity {
 
             ArrayAdapter<String> groupAdapter = new ArrayAdapter<>(
                     this,
-                    android.R.layout.simple_spinner_item,
+                    R.layout.item_spinner,
                     groupNames
             );
-            groupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            groupAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
             spSettleGroup.setAdapter(groupAdapter);
             spSettleGroup.setSelection(selectedIndex);
 
@@ -146,24 +146,25 @@ public class SettleUpActivity extends AppCompatActivity {
 
         List<String> members = selectedGroup.getMembers();
         if (members.isEmpty()) {
+            SessionManager sessionManager = new SessionManager(this);
             members = new ArrayList<>();
-            members.add("You");
+            members.add(sessionManager.getUserName());
         }
 
         ArrayAdapter<String> payerAdapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_spinner_item,
+                R.layout.item_spinner,
                 members
         );
-        payerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        payerAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
         spSettlePayer.setAdapter(payerAdapter);
 
         ArrayAdapter<String> receiverAdapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_spinner_item,
+                R.layout.item_spinner,
                 members
         );
-        receiverAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        receiverAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
         spSettleReceiver.setAdapter(receiverAdapter);
 
         // Pre-select second member as receiver if available
@@ -206,11 +207,11 @@ public class SettleUpActivity extends AppCompatActivity {
 
         if (debtPaise > 0) {
             String formattedDebt = String.format(Locale.getDefault(), "₹%.2f", debtPaise / 100.0);
-            tvOutstandingDebtNotice.setText(payer + " currently owes " + receiver + " " + formattedDebt);
+            tvOutstandingDebtNotice.setText(payer + " needs to pay " + receiver + " " + formattedDebt);
             tvOutstandingDebtNotice.setTextColor(0xFF246B50);
             etSettleAmount.setText(String.format(Locale.US, "%.2f", debtPaise / 100.0));
         } else {
-            tvOutstandingDebtNotice.setText("No recorded debt between " + payer + " and " + receiver + ".");
+            tvOutstandingDebtNotice.setText("No pending payment between " + payer + " and " + receiver + ".");
             tvOutstandingDebtNotice.setTextColor(0xFF687386);
         }
     }

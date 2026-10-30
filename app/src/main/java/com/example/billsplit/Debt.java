@@ -33,11 +33,11 @@ public class Debt {
 
     public String getDisplayText() {
         if (fromMember.equalsIgnoreCase("You")) {
-            return "You owe " + toMember + " " + getFormattedAmount();
+            return "You need to pay " + toMember + " " + getFormattedAmount();
         } else if (toMember.equalsIgnoreCase("You")) {
-            return fromMember + " owes You " + getFormattedAmount();
+            return fromMember + " needs to pay You " + getFormattedAmount();
         } else {
-            return fromMember + " owes " + toMember + " " + getFormattedAmount();
+            return fromMember + " needs to pay " + toMember + " " + getFormattedAmount();
         }
     }
 }

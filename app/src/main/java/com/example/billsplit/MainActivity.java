@@ -123,8 +123,9 @@ public class MainActivity extends AppCompatActivity {
                 defaultGroup.put("id", "group_pune_flat");
                 defaultGroup.put("name", "Pune Flat");
                 defaultGroup.put("type", "Flat 🏠");
+                SessionManager sessionManager = new SessionManager(this);
                 JSONArray defaultMembers = new JSONArray();
-                defaultMembers.put("You");
+                defaultMembers.put(sessionManager.getUserName());
                 defaultMembers.put("Rahul");
                 defaultMembers.put("Amit");
                 defaultGroup.put("members", defaultMembers);
@@ -216,11 +217,21 @@ public class MainActivity extends AppCompatActivity {
 
             tvTotalExpenses.setText(formatMoney(totalPaise));
 
+            SessionManager sessionManager = new SessionManager(this);
+            String currentUserName = sessionManager.getUserName();
+
             // Load settlements for active group
             List<Settlement> settlements = loadActiveGroupSettlements();
             java.util.Map<String, Long> netBalances = BalanceCalculator.calculateNetBalances(activeGroupMembers, recentList, settlements);
-            Long youNetBalanceObj = netBalances.get("You");
-            long youNetBalance = (youNetBalanceObj != null) ? youNetBalanceObj : 0L;
+            
+            Long userNetBalanceObj = null;
+            for (java.util.Map.Entry<String, Long> entry : netBalances.entrySet()) {
+                if (entry.getKey().equalsIgnoreCase(currentUserName) || entry.getKey().equalsIgnoreCase("You")) {
+                    userNetBalanceObj = entry.getValue();
+                    break;
+                }
+            }
+            long youNetBalance = (userNetBalanceObj != null) ? userNetBalanceObj : 0L;
 
             if (youNetBalance < 0) {
                 tvYouOwe.setText(formatMoney(-youNetBalance));
