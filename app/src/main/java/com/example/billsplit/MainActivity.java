@@ -17,6 +17,7 @@ import org.json.JSONObject;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -162,68 +163,81 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadExpenses() {
-        String savedData = preferences.getString("expenses", "[]");
+        String savedExpenses = preferences.getString("expenses", "[]");
+        String savedSettlements = preferences.getString("settlements", "[]");
 
         try {
-            JSONArray expenses = new JSONArray(savedData);
+            JSONArray expenses = new JSONArray(savedExpenses);
+            JSONArray settlementsArray = new JSONArray(savedSettlements);
 
             long totalPaise = 0;
-            long youBalance = 0;
+            List<Expense> expenseList = new ArrayList<>();
+            List<Expense> activityList = new ArrayList<>();
+            List<Settlement> settlements = new ArrayList<>();
 
-            int memberCount = activeGroupMembers.isEmpty() ? 3 : activeGroupMembers.size();
-            List<Expense> recentList = new ArrayList<>();
+            // 1. Load Group Expenses
+            for (int i = 0; i < expenses.length(); i++) {
+                JSONObject obj = expenses.getJSONObject(i);
+                String expGroupId = obj.optString("groupId", "group_pune_flat");
 
-            for (int i = expenses.length() - 1; i >= 0; i--) {
-                JSONObject expense = expenses.getJSONObject(i);
-
-                String expGroupId = expense.optString("groupId", "group_pune_flat");
-
-                // Filter expenses for current active group
                 if (activeGroupId.equals(expGroupId)) {
-                    String id = expense.optString("id", String.valueOf(i));
-                    String description = expense.getString("description");
-                    String category = expense.getString("category");
-                    String paidBy = expense.getString("paidBy");
-                    long amountPaise = expense.getLong("amountPaise");
-                    long date = expense.optLong("date", 0);
+                    String id = obj.optString("id", String.valueOf(i));
+                    String description = obj.getString("description");
+                    String category = obj.optString("category", "Other");
+                    String paidBy = obj.optString("paidBy", "You");
+                    long amountPaise = obj.optLong("amountPaise", 0);
+                    long date = obj.optLong("date", 0);
 
                     totalPaise += amountPaise;
 
-                    long yourSharePaise = amountPaise / memberCount;
-                    JSONArray splitsArray = expense.optJSONArray("splits");
+                    JSONArray splitsArray = obj.optJSONArray("splits");
                     List<MemberSplit> splitList = new ArrayList<>();
-
-                    if (splitsArray != null && splitsArray.length() > 0) {
+                    if (splitsArray != null) {
                         for (int k = 0; k < splitsArray.length(); k++) {
                             JSONObject splitObj = splitsArray.getJSONObject(k);
-                            String mName = splitObj.optString("memberName", "");
-                            long mShare = splitObj.optLong("sharePaise", 0);
-                            splitList.add(new MemberSplit(mName, mShare));
-                            if (mName.equalsIgnoreCase("You")) {
-                                yourSharePaise = mShare;
-                            }
+                            splitList.add(new MemberSplit(splitObj.optString("memberName"), splitObj.optLong("sharePaise")));
                         }
                     }
 
-                    if (paidBy.equalsIgnoreCase("You")) {
-                        youBalance += amountPaise;
-                    }
-                    youBalance -= yourSharePaise;
-
-                    String splitType = expense.optString("splitType", "EQUAL");
-                    recentList.add(new Expense(id, description, amountPaise, category, paidBy, date, i, expGroupId, splitType, splitList));
+                    String splitType = obj.optString("splitType", "EQUAL");
+                    Expense exp = new Expense(id, description, amountPaise, category, paidBy, date, i, expGroupId, splitType, splitList);
+                    expenseList.add(exp);
+                    activityList.add(exp);
                 }
             }
 
+            // 2. Load Group Settlements
+            for (int i = 0; i < settlementsArray.length(); i++) {
+                JSONObject obj = settlementsArray.getJSONObject(i);
+                if (activeGroupId.equals(obj.optString("groupId", "group_pune_flat"))) {
+                    String id = obj.optString("id");
+                    String payer = obj.optString("payer");
+                    String receiver = obj.optString("receiver");
+                    long amountPaise = obj.optLong("amountPaise", 0);
+                    long date = obj.optLong("date", System.currentTimeMillis());
+
+                    Settlement s = new Settlement(id, activeGroupId, payer, receiver, amountPaise, date);
+                    settlements.add(s);
+
+                    // Add to recent activity feed
+                    String desc = payer + " paid " + receiver;
+                    Expense settlementExp = new Expense(id, desc, amountPaise, "Settlement", payer, date, -1, activeGroupId, "SETTLEMENT", new ArrayList<>());
+                    activityList.add(settlementExp);
+                }
+            }
+
+            // 3. Sort Recent Activity by Date Descending
+            Collections.sort(activityList, (e1, e2) -> Long.compare(e2.getDate(), e1.getDate()));
+
+            // 4. Update Total Expenses Display
             tvTotalExpenses.setText(formatMoney(totalPaise));
 
+            // 5. Calculate Net Balances Including Settlements
             SessionManager sessionManager = new SessionManager(this);
             String currentUserName = sessionManager.getUserName();
 
-            // Load settlements for active group
-            List<Settlement> settlements = loadActiveGroupSettlements();
-            java.util.Map<String, Long> netBalances = BalanceCalculator.calculateNetBalances(activeGroupMembers, recentList, settlements);
-            
+            java.util.Map<String, Long> netBalances = BalanceCalculator.calculateNetBalances(activeGroupMembers, expenseList, settlements);
+
             Long userNetBalanceObj = null;
             for (java.util.Map.Entry<String, Long> entry : netBalances.entrySet()) {
                 if (entry.getKey().equalsIgnoreCase(currentUserName) || entry.getKey().equalsIgnoreCase("You")) {
@@ -241,20 +255,26 @@ public class MainActivity extends AppCompatActivity {
                 tvOwedToYou.setText(formatMoney(youNetBalance));
             }
 
-            if (recentList.isEmpty()) {
+            // 6. Populate Recent Activity RecyclerView
+            if (activityList.isEmpty()) {
                 tvRecentExpenses.setVisibility(View.VISIBLE);
                 rvRecentExpenses.setVisibility(View.GONE);
-                tvRecentExpenses.setText("No expenses yet in this group.\nTap + Add Expense to get started!");
+                tvRecentExpenses.setText("No expenses or settlements yet in this group.\nTap + Add Expense or Settle Up to start!");
             } else {
                 tvRecentExpenses.setVisibility(View.GONE);
                 rvRecentExpenses.setVisibility(View.VISIBLE);
 
-                ExpenseAdapter adapter = new ExpenseAdapter(recentList);
+                ExpenseAdapter adapter = new ExpenseAdapter(activityList);
                 adapter.setOnItemClickListener((expense, position) -> {
-                    Intent intent = new Intent(MainActivity.this, ExpenseDetailActivity.class);
-                    intent.putExtra("is_from_click", true);
-                    intent.putExtra(ExpenseDetailActivity.EXTRA_EXPENSE_INDEX, expense.getOriginalIndex());
-                    startActivity(intent);
+                    if ("SETTLEMENT".equalsIgnoreCase(expense.getSplitType())) {
+                        Intent intent = new Intent(MainActivity.this, SettlementHistoryActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(MainActivity.this, ExpenseDetailActivity.class);
+                        intent.putExtra("is_from_click", true);
+                        intent.putExtra(ExpenseDetailActivity.EXTRA_EXPENSE_INDEX, expense.getOriginalIndex());
+                        startActivity(intent);
+                    }
                 });
                 rvRecentExpenses.setAdapter(adapter);
             }
