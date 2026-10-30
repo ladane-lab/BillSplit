@@ -34,7 +34,14 @@ public class ProfileActivity extends AppCompatActivity {
         Button btnLogout = findViewById(R.id.btnLogout);
         View btnBack = findViewById(R.id.btnBack);
 
-        btnBack.setOnClickListener(v -> finish());
+        btnBack.setOnClickListener(v -> navigateToMain());
+
+        getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                navigateToMain();
+            }
+        });
         btnSaveProfile.setOnClickListener(v -> saveProfile());
         btnLogout.setOnClickListener(v -> logout());
 

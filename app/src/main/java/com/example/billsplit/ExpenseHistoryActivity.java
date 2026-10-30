@@ -39,7 +39,14 @@ public class ExpenseHistoryActivity extends AppCompatActivity {
         rvExpenseHistory.setLayoutManager(new LinearLayoutManager(this));
         rvExpenseHistory.setNestedScrollingEnabled(false);
 
-        btnBack.setOnClickListener(v -> finish());
+        btnBack.setOnClickListener(v -> navigateToMain());
+
+        getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                navigateToMain();
+            }
+        });
 
         loadExpenseHistory();
     }

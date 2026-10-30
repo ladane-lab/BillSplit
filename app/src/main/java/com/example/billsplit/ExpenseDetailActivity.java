@@ -44,10 +44,8 @@ public class ExpenseDetailActivity extends AppCompatActivity {
 
         preferences = getSharedPreferences("SplitMateData", MODE_PRIVATE);
 
-        if (isTaskRoot() || !getIntent().hasExtra(EXTRA_EXPENSE_INDEX)) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
+        if (!getIntent().hasExtra(EXTRA_EXPENSE_INDEX)) {
+            navigateToMain();
             return;
         }
 
@@ -64,7 +62,14 @@ public class ExpenseDetailActivity extends AppCompatActivity {
         Button btnEditExpense = findViewById(R.id.btnEditExpense);
         Button btnDeleteExpense = findViewById(R.id.btnDeleteExpense);
 
-        btnBack.setOnClickListener(v -> finish());
+        btnBack.setOnClickListener(v -> navigateToMain());
+
+        getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                navigateToMain();
+            }
+        });
 
         btnEditExpense.setOnClickListener(v -> {
             Intent intent = new Intent(ExpenseDetailActivity.this, EditExpenseActivity.class);

@@ -40,7 +40,14 @@ public class ReportsActivity extends AppCompatActivity {
         tvMemberSpending = findViewById(R.id.tvMemberSpending);
 
         View btnBack = findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(v -> finish());
+        btnBack.setOnClickListener(v -> navigateToMain());
+
+        getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                navigateToMain();
+            }
+        });
 
         generateReports();
     }
