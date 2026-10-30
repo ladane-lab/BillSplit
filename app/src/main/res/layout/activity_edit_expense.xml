@@ -9,146 +9,206 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="20dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Edit Expense"
-            android:textColor="#246B50"
-            android:textSize="28sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Update the details for this expense."
-            android:textColor="#687386"
-            android:textSize="14sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Expense description"
-            android:textColor="#172033"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/etEditDescription"
+        <!-- Header Bar -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="#FFFFFF"
-            android:hint="e.g. Monthly rent"
-            android:inputType="textCapSentences"
-            android:padding="14dp"
-            android:textColor="#172033"
-            android:textColorHint="#94A3B8" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Edit Expense"
+                    android:textColor="#246B50"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Update the details for this expense"
+                    android:textColor="#687386"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btnHeaderBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="10dp"
+                android:text="Back"
+                android:textColor="#246B50"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Card 1: Description & Amount -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Amount (₹)"
-            android:textColor="#172033"
-            android:textStyle="bold" />
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:padding="18dp">
 
-        <EditText
-            android:id="@+id/etEditAmount"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="EXPENSE DESCRIPTION"
+                android:textColor="#687386"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/etEditDescription"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_input_field"
+                android:hint="e.g. Monthly room rent"
+                android:inputType="textCapSentences"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:textColor="#172033"
+                android:textColorHint="#94A3B8"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="AMOUNT (₹)"
+                android:textColor="#687386"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/etEditAmount"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_input_field"
+                android:hint="e.g. 3000"
+                android:inputType="numberDecimal"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:textColor="#172033"
+                android:textColorHint="#94A3B8"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <!-- Card 2: Group, Category & Paid By -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="#FFFFFF"
-            android:hint="e.g. 3000"
-            android:inputType="numberDecimal"
-            android:padding="14dp"
-            android:textColor="#172033"
-            android:textColorHint="#94A3B8" />
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:padding="18dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Group"
-            android:textColor="#172033"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SELECT GROUP"
+                android:textColor="#687386"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
-        <Spinner
-            android:id="@+id/spEditGroup"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="8dp"
-            android:background="#FFFFFF"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp" />
+            <Spinner
+                android:id="@+id/spEditGroup"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_input_field"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Category"
-            android:textColor="#172033"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="CATEGORY"
+                android:textColor="#687386"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
-        <Spinner
-            android:id="@+id/spEditCategory"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="8dp"
-            android:background="#FFFFFF"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp" />
+            <Spinner
+                android:id="@+id/spEditCategory"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_input_field"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Paid by"
-            android:textColor="#172033"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="PAID BY"
+                android:textColor="#687386"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
-        <Spinner
-            android:id="@+id/spEditPaidBy"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="8dp"
-            android:background="#FFFFFF"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp" />
+            <Spinner
+                android:id="@+id/spEditPaidBy"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_input_field"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp" />
+        </LinearLayout>
 
+        <!-- Breakdown Card -->
         <TextView
             android:id="@+id/tvEditSplitPreview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="#E0F2E9"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_preview_card"
             android:lineSpacingExtra="4dp"
             android:padding="16dp"
             android:text="Equal Split Breakdown:\n• Each person's share: ₹0.00"
             android:textColor="#246B50"
-            android:textSize="15sp"
+            android:textSize="14sp"
             android:textStyle="bold" />
 
+        <!-- Action Buttons -->
         <Button
             android:id="@+id/btnUpdateExpense"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="24dp"
+            android:layout_height="52dp"
+            android:layout_marginTop="20dp"
             android:backgroundTint="#246B50"
             android:text="Update Expense"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:textSize="15sp" />
 
         <Button
             android:id="@+id/btnEditCancel"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
             android:text="Cancel"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:textColor="#687386" />
 
     </LinearLayout>
 </ScrollView>

@@ -101,6 +101,11 @@ public class AddExpenseActivity extends AppCompatActivity {
 
         Button btnSaveExpense = findViewById(R.id.btnSaveExpense);
         Button btnCancel = findViewById(R.id.btnCancel);
+        View btnHeaderBack = findViewById(R.id.btnHeaderBack);
+
+        if (btnHeaderBack != null) {
+            btnHeaderBack.setOnClickListener(v -> finish());
+        }
 
         btnSaveExpense.setOnClickListener(view -> saveExpense());
         btnCancel.setOnClickListener(view -> finish());
@@ -254,31 +259,38 @@ public class AddExpenseActivity extends AppCompatActivity {
     }
 
     private void setupCustomInputs(List<String> members, boolean isAmountMode) {
-        if (customInputFields.size() == members.size()) {
-            return;
-        }
-
         llCustomInputs.removeAllViews();
         customInputFields.clear();
+
+        float density = getResources().getDisplayMetrics().density;
+        int etWidthPx = (int) (130 * density);
+        int etHeightPx = (int) (44 * density);
+        int paddingPx = (int) (10 * density);
+        int rowPaddingY = (int) (6 * density);
 
         for (String member : members) {
             LinearLayout row = new LinearLayout(this);
             row.setOrientation(LinearLayout.HORIZONTAL);
-            row.setPadding(0, 8, 0, 8);
+            row.setGravity(android.view.Gravity.CENTER_VERTICAL);
+            row.setPadding(0, rowPaddingY, 0, rowPaddingY);
 
             TextView label = new TextView(this);
-            label.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
+            LinearLayout.LayoutParams labelParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
+            label.setLayoutParams(labelParams);
             label.setText(member);
             label.setTextColor(0xFF172033);
             label.setTextSize(15);
+            label.setTypeface(null, android.graphics.Typeface.BOLD);
 
             EditText et = new EditText(this);
-            et.setLayoutParams(new LinearLayout.LayoutParams(300, LinearLayout.LayoutParams.WRAP_CONTENT));
+            LinearLayout.LayoutParams etParams = new LinearLayout.LayoutParams(etWidthPx, etHeightPx);
+            et.setLayoutParams(etParams);
             et.setHint(isAmountMode ? "₹0.00" : "0%");
             et.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-            et.setBackgroundColor(0xFFFFFFFF);
-            et.setPadding(12, 12, 12, 12);
+            et.setBackgroundResource(R.drawable.bg_input_field);
+            et.setPadding(paddingPx, 0, paddingPx, 0);
             et.setTextColor(0xFF172033);
+            et.setTextSize(14);
 
             et.addTextChangedListener(new TextWatcher() {
                 @Override

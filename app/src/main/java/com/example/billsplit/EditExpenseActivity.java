@@ -85,6 +85,11 @@ public class EditExpenseActivity extends AppCompatActivity {
 
         Button btnUpdateExpense = findViewById(R.id.btnUpdateExpense);
         Button btnEditCancel = findViewById(R.id.btnEditCancel);
+        View btnHeaderBack = findViewById(R.id.btnHeaderBack);
+
+        if (btnHeaderBack != null) {
+            btnHeaderBack.setOnClickListener(v -> finish());
+        }
 
         btnUpdateExpense.setOnClickListener(v -> updateExpense());
         btnEditCancel.setOnClickListener(v -> finish());
