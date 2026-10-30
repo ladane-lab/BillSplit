@@ -37,8 +37,9 @@ public class SettlementHistoryActivity extends AppCompatActivity {
         View btnBack = findViewById(R.id.btnBack);
 
         rvSettlementHistory.setLayoutManager(new LinearLayoutManager(this));
+        rvSettlementHistory.setNestedScrollingEnabled(false);
 
-        btnBack.setOnClickListener(v -> navigateToMain());
+        btnBack.setOnClickListener(v -> finish());
 
         loadSettlementHistory();
     }

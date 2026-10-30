@@ -40,7 +40,7 @@ public class ReportsActivity extends AppCompatActivity {
         tvMemberSpending = findViewById(R.id.tvMemberSpending);
 
         View btnBack = findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(v -> navigateToMain());
+        btnBack.setOnClickListener(v -> finish());
 
         generateReports();
     }

@@ -53,6 +53,11 @@ public class AddGroupActivity extends AppCompatActivity {
 
         Button btnSaveGroup = findViewById(R.id.btnSaveGroup);
         Button btnCancelGroup = findViewById(R.id.btnCancelGroup);
+        android.view.View btnHeaderBack = findViewById(R.id.btnHeaderBack);
+
+        if (btnHeaderBack != null) {
+            btnHeaderBack.setOnClickListener(v -> finish());
+        }
 
         btnSaveGroup.setOnClickListener(v -> saveGroup());
         btnCancelGroup.setOnClickListener(v -> finish());

@@ -64,14 +64,7 @@ public class ExpenseDetailActivity extends AppCompatActivity {
         Button btnEditExpense = findViewById(R.id.btnEditExpense);
         Button btnDeleteExpense = findViewById(R.id.btnDeleteExpense);
 
-        btnBack.setOnClickListener(v -> navigateToMain());
-
-        getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                navigateToMain();
-            }
-        });
+        btnBack.setOnClickListener(v -> finish());
 
         btnEditExpense.setOnClickListener(v -> {
             Intent intent = new Intent(ExpenseDetailActivity.this, EditExpenseActivity.class);

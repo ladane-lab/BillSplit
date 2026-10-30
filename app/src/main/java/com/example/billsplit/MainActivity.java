@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         rvRecentExpenses = findViewById(R.id.rvRecentExpenses);
 
         rvRecentExpenses.setLayoutManager(new LinearLayoutManager(this));
+        rvRecentExpenses.setNestedScrollingEnabled(false);
 
         Button btnAddExpense = findViewById(R.id.btnAddExpense);
         Button btnSettleUp = findViewById(R.id.btnSettleUp);

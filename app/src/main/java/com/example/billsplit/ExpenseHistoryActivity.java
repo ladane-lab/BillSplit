@@ -37,8 +37,9 @@ public class ExpenseHistoryActivity extends AppCompatActivity {
         View btnBack = findViewById(R.id.btnBack);
 
         rvExpenseHistory.setLayoutManager(new LinearLayoutManager(this));
+        rvExpenseHistory.setNestedScrollingEnabled(false);
 
-        btnBack.setOnClickListener(v -> navigateToMain());
+        btnBack.setOnClickListener(v -> finish());
 
         loadExpenseHistory();
     }

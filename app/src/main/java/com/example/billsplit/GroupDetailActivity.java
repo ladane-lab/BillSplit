@@ -61,7 +61,10 @@ public class GroupDetailActivity extends AppCompatActivity {
         rvMembers.setLayoutManager(new LinearLayoutManager(this));
         rvGroupExpenses.setLayoutManager(new LinearLayoutManager(this));
 
-        btnBack.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+        rvMembers.setNestedScrollingEnabled(false);
+        rvGroupExpenses.setNestedScrollingEnabled(false);
+
+        btnBack.setOnClickListener(v -> finish());
         btnAddMember.setOnClickListener(v -> showAddMemberDialog());
         btnSetActiveGroup.setOnClickListener(v -> setActiveGroup());
 

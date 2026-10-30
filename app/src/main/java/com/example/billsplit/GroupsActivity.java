@@ -36,8 +36,9 @@ public class GroupsActivity extends AppCompatActivity {
         Button btnCreateGroup = findViewById(R.id.btnCreateGroup);
 
         rvGroups.setLayoutManager(new LinearLayoutManager(this));
+        rvGroups.setNestedScrollingEnabled(false);
 
-        btnBack.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+        btnBack.setOnClickListener(v -> finish());
         btnCreateGroup.setOnClickListener(v -> {
             Intent intent = new Intent(GroupsActivity.this, AddGroupActivity.class);
             startActivity(intent);
