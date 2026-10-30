@@ -167,8 +167,23 @@ public class SettleUpActivity extends AppCompatActivity {
         receiverAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
         spSettleReceiver.setAdapter(receiverAdapter);
 
-        // Pre-select second member as receiver if available
-        if (members.size() > 1) {
+        // Calculate debts to auto pre-select debtor as Payer and creditor as Receiver
+        List<Expense> groupExpenses = loadGroupExpenses();
+        List<Settlement> groupSettlements = loadGroupSettlements();
+        java.util.Map<String, Long> balances = BalanceCalculator.calculateNetBalances(members, groupExpenses, groupSettlements);
+        List<Debt> debts = BalanceCalculator.calculateSimplifiedDebts(balances);
+
+        if (!debts.isEmpty()) {
+            Debt topDebt = debts.get(0);
+            for (int i = 0; i < members.size(); i++) {
+                if (members.get(i).equalsIgnoreCase(topDebt.getFromMember())) {
+                    spSettlePayer.setSelection(i);
+                }
+                if (members.get(i).equalsIgnoreCase(topDebt.getToMember())) {
+                    spSettleReceiver.setSelection(i);
+                }
+            }
+        } else if (members.size() > 1) {
             spSettleReceiver.setSelection(1);
         }
     }
@@ -197,21 +212,29 @@ public class SettleUpActivity extends AppCompatActivity {
         );
         List<Debt> debts = BalanceCalculator.calculateSimplifiedDebts(balances);
 
-        long debtPaise = 0;
+        long directDebtPaise = 0;
+        long reverseDebtPaise = 0;
+
         for (Debt debt : debts) {
             if (debt.getFromMember().equalsIgnoreCase(payer) && debt.getToMember().equalsIgnoreCase(receiver)) {
-                debtPaise = debt.getAmountPaise();
-                break;
+                directDebtPaise = debt.getAmountPaise();
+            } else if (debt.getFromMember().equalsIgnoreCase(receiver) && debt.getToMember().equalsIgnoreCase(payer)) {
+                reverseDebtPaise = debt.getAmountPaise();
             }
         }
 
-        if (debtPaise > 0) {
-            String formattedDebt = String.format(Locale.getDefault(), "₹%.2f", debtPaise / 100.0);
+        if (directDebtPaise > 0) {
+            String formattedDebt = String.format(Locale.getDefault(), "₹%.2f", directDebtPaise / 100.0);
             tvOutstandingDebtNotice.setText(payer + " needs to pay " + receiver + " " + formattedDebt);
             tvOutstandingDebtNotice.setTextColor(0xFF246B50);
-            etSettleAmount.setText(String.format(Locale.US, "%.2f", debtPaise / 100.0));
+            etSettleAmount.setText(String.format(Locale.US, "%.2f", directDebtPaise / 100.0));
+        } else if (reverseDebtPaise > 0) {
+            String formattedDebt = String.format(Locale.getDefault(), "₹%.2f", reverseDebtPaise / 100.0);
+            tvOutstandingDebtNotice.setText("Note: " + receiver + " needs to pay " + payer + " " + formattedDebt + ". Please swap Payer and Receiver.");
+            tvOutstandingDebtNotice.setTextColor(0xFFC24141);
+            etSettleAmount.setText(String.format(Locale.US, "%.2f", reverseDebtPaise / 100.0));
         } else {
-            tvOutstandingDebtNotice.setText("No pending payment between " + payer + " and " + receiver + ".");
+            tvOutstandingDebtNotice.setText("No pending balance between " + payer + " and " + receiver + ".");
             tvOutstandingDebtNotice.setTextColor(0xFF687386);
         }
     }
