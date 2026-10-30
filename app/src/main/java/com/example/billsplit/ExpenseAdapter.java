@@ -49,12 +49,14 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
 
         holder.tvAmount.setText(expense.getFormattedAmount());
 
+        holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 int adapterPos = holder.getBindingAdapterPosition();
                 if (adapterPos != RecyclerView.NO_POSITION) {
                     listener.onItemClick(expense, adapterPos);
                 }
             }
+        });
     }
 
     @Override
