@@ -100,10 +100,10 @@ public class EditExpenseActivity extends AppCompatActivity {
     private void setSpinnerAdapter(Spinner spinner, String[] items) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_spinner_item,
+                R.layout.item_spinner,
                 items
         );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
         spinner.setAdapter(adapter);
     }
 
@@ -141,10 +141,10 @@ public class EditExpenseActivity extends AppCompatActivity {
 
             ArrayAdapter<String> groupAdapter = new ArrayAdapter<>(
                     this,
-                    android.R.layout.simple_spinner_item,
+                    R.layout.item_spinner,
                     groupNames
             );
-            groupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            groupAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
             spEditGroup.setAdapter(groupAdapter);
             spEditGroup.setSelection(selectedIndex);
 
@@ -183,10 +183,10 @@ public class EditExpenseActivity extends AppCompatActivity {
 
         ArrayAdapter<String> memberAdapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_spinner_item,
+                R.layout.item_spinner,
                 members
         );
-        memberAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        memberAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
         spEditPaidBy.setAdapter(memberAdapter);
 
         // Retain initial paidBy selection if available

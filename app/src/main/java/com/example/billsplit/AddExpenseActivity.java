@@ -49,6 +49,7 @@ public class AddExpenseActivity extends AppCompatActivity {
     private Group selectedGroup;
 
     private final List<EditText> customInputFields = new ArrayList<>();
+    private String currentCustomMode = "";
 
     private final String[] categories = {
             "Rent",
@@ -160,10 +161,10 @@ public class AddExpenseActivity extends AppCompatActivity {
 
             ArrayAdapter<String> groupAdapter = new ArrayAdapter<>(
                     this,
-                    android.R.layout.simple_spinner_item,
+                    R.layout.item_spinner,
                     groupNames
             );
-            groupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            groupAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
             spGroup.setAdapter(groupAdapter);
             spGroup.setSelection(selectedIndex);
 
@@ -202,20 +203,20 @@ public class AddExpenseActivity extends AppCompatActivity {
 
         ArrayAdapter<String> memberAdapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_spinner_item,
+                R.layout.item_spinner,
                 members
         );
-        memberAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        memberAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
         spPaidBy.setAdapter(memberAdapter);
     }
 
     private void setSpinnerAdapter(Spinner spinner, String[] items) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_spinner_item,
+                R.layout.item_spinner,
                 items
         );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
         spinner.setAdapter(adapter);
     }
 
@@ -259,6 +260,12 @@ public class AddExpenseActivity extends AppCompatActivity {
     }
 
     private void setupCustomInputs(List<String> members, boolean isAmountMode) {
+        String modeKey = (isAmountMode ? "AMOUNT" : "PERCENT") + "_" + members.toString();
+        if (modeKey.equals(currentCustomMode) && llCustomInputs.getChildCount() == members.size()) {
+            return;
+        }
+
+        currentCustomMode = modeKey;
         llCustomInputs.removeAllViews();
         customInputFields.clear();
 
