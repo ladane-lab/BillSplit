@@ -16,17 +16,19 @@ exports.registerUser = async (req, res, next) => {
             return res.status(400).json({ success: false, message: 'Please provide all required fields' });
         }
 
-        const userExists = await User.findOne({ email });
+        const cleanEmail = email.trim().toLowerCase();
+
+        const userExists = await User.findOne({ email: cleanEmail });
         if (userExists) {
             return res.status(400).json({ success: false, message: 'User already exists' });
         }
 
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const hashedPassword = await bcrypt.hash(password.trim(), salt);
 
         const user = await User.create({
-            name,
-            email,
+            name: name.trim(),
+            email: cleanEmail,
             password: hashedPassword
         });
 
@@ -54,12 +56,15 @@ exports.loginUser = async (req, res, next) => {
             return res.status(400).json({ success: false, message: 'Please provide email and password' });
         }
 
-        const user = await User.findOne({ email }).select('+password');
+        const cleanEmail = email.trim().toLowerCase();
+        const cleanPassword = password.trim();
+
+        const user = await User.findOne({ email: cleanEmail }).select('+password');
         if (!user) {
             return res.status(401).json({ success: false, message: 'Invalid credentials' });
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = await bcrypt.compare(cleanPassword, user.password);
         if (!isMatch) {
             return res.status(401).json({ success: false, message: 'Invalid credentials' });
         }

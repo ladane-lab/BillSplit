@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import org.json.JSONObject;
 
+import java.util.Locale;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void performLogin() {
-        String email = etLoginEmail.getText().toString().trim();
+        String email = etLoginEmail.getText().toString().trim().toLowerCase(Locale.ROOT);
         String password = etLoginPassword.getText().toString().trim();
 
         if (email.isEmpty()) {
