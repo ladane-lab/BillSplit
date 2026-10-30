@@ -10,6 +10,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import org.json.JSONObject;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
 
         AuthRequest request = new AuthRequest(email, password);
 
-        // Perform Retrofit API call
+        // Perform strict Retrofit API authentication call
         ApiClient.getApiService().login(request).enqueue(new Callback<AuthResponse>() {
             @Override
             public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
@@ -75,19 +77,22 @@ public class LoginActivity extends AppCompatActivity {
                     navigateToMain();
 
                 } else {
-                    // Local session fallback if backend server is not currently running
-                    sessionManager.createLoginSession("local_demo_jwt_token", "user_123", "You", email);
-                    Toast.makeText(LoginActivity.this, "Signed in (Local Session)", Toast.LENGTH_SHORT).show();
-                    navigateToMain();
+                    String errorMessage = "Invalid email or password.";
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorJson = response.errorBody().string();
+                            JSONObject obj = new JSONObject(errorJson);
+                            errorMessage = obj.optString("message", "Invalid email or password.");
+                        }
+                    } catch (Exception ignored) {}
+
+                    Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<AuthResponse> call, Throwable t) {
-                // Local session fallback when offline / local server unreachable
-                sessionManager.createLoginSession("local_demo_jwt_token", "user_123", "You", email);
-                Toast.makeText(LoginActivity.this, "Signed in (Offline Mode)", Toast.LENGTH_SHORT).show();
-                navigateToMain();
+                Toast.makeText(LoginActivity.this, "Unable to connect to server. Check backend server.", Toast.LENGTH_LONG).show();
             }
         });
     }

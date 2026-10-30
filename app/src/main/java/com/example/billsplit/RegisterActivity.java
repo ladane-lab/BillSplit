@@ -10,6 +10,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import org.json.JSONObject;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -78,19 +80,22 @@ public class RegisterActivity extends AppCompatActivity {
                     navigateToMain();
 
                 } else {
-                    // Local session fallback
-                    sessionManager.createLoginSession("local_demo_jwt_token", "user_123", name, email);
-                    Toast.makeText(RegisterActivity.this, "Registered (Local Session)", Toast.LENGTH_SHORT).show();
-                    navigateToMain();
+                    String errorMessage = "Registration failed.";
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorJson = response.errorBody().string();
+                            JSONObject obj = new JSONObject(errorJson);
+                            errorMessage = obj.optString("message", "Registration failed.");
+                        }
+                    } catch (Exception ignored) {}
+
+                    Toast.makeText(RegisterActivity.this, errorMessage, Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<AuthResponse> call, Throwable t) {
-                // Local session fallback
-                sessionManager.createLoginSession("local_demo_jwt_token", "user_123", name, email);
-                Toast.makeText(RegisterActivity.this, "Registered (Offline Mode)", Toast.LENGTH_SHORT).show();
-                navigateToMain();
+                Toast.makeText(RegisterActivity.this, "Unable to connect to server. Check backend server.", Toast.LENGTH_LONG).show();
             }
         });
     }
